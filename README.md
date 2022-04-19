@@ -1,19 +1,23 @@
 # rancher-federal-fleet-demo
 
 ## A demo of Fleet managing apps in multiple clusters via Rancher
-**For experienced users, please scroll to the bottom for the TL;DR instructions.** 
 
-The instructions directly below are intended for newer users starting out with Fleet.
+## TL;DR Instructions (for experienced Rancher admins)
+- Fork this repo
+- Create a Fleet git repo pointing to your forked version of this repo
+- Target it to multiple clusters
+- Watch the magic happen
+- Make changes in this repo and watch the rolling deployments
+
 ## Getting started
+The instructions below are intended for newer users starting out with Fleet.
+
 Pre-requisites:
-- A working Rancher 2.5.6+ cluster
+- A working Rancher 2.6 cluster
 - A forked version of this repository
 
 Instructions:
 
-***Note: Step 1 is only required for Rancher 2.5. Rancher 2.6 uses sslip.io for dynamic DNS by default***
-- Edit the `ingress-ip-domain` under `Settings` in the Cluster Manager UI
-  - Change from `xip.io` to `sslip.io`
 - Deploy two or more clusters (provider agnostic)
 - Navigate to `Cluster Explorer` -> `Continuous Delivery`
   - Under `Continuous Delivery` click `Cluster Groups` (sidebar)
@@ -22,7 +26,8 @@ Instructions:
       - Name: fleet-demo
       - Cluster Selectors
         - Key: fleet-demo
-        - Operator: Exists
+        - Operator: in list
+        - Value: true
       - Click `Create` (bottom right)
   - Under `Continuous Delivery` -> `Git Repos`, click `Create`
     - Populate the form with the following:
@@ -31,19 +36,17 @@ Instructions:
       - Watch - A Branch: main **important: github's default is now main
       - Deploy To: Target Type: fleet-demo (Under Cluster Groups at the very bottom of the drop-down)
     - Click Create
-- Navigate back to `Cluster Manager`
-  - Select your first cluster, then click the 3 dot menu and choose `Edit`
-    - Expand the box titled `Labels & Annotations`
-      - Click `Add Label`
-      - Populate the label with the following:
-        - `fleet-demo` `cluster1`
+- Under `Continuous Delivery` -> `Clusters`
+  - Select your first cluster, then click the 3 dot menu and choose `Edit Config`
+    - Click `Add Label`
+    - Populate the label with the following:
+        - `fleet-demo` `true`
     - Click `Save`
   - Repeat these steps on the second cluster
-    - Select cluster, 3 dot menu, `Edit`
-        - Expand the box titled `Labels & Annotations`
-        - Click `Add Label`
-        - Populate the label with the following:
-          - `fleet-demo` `cluster2`
+    - Select cluster, 3 dot menu, `Edit Config`
+      - Click `Add Label`
+      - Populate the label with the following:
+          - `fleet-demo` `true`
     - Click `Save`
 - Choose a cluster and navigate back to `Cluster Explorer`
   - Choose `Ingresses` from the left sidebar
@@ -63,12 +66,3 @@ To show multi-cluster rolling update:
 This works with any number of clusters.
 
 Please try it out and give feedback!
-
-
-## TL;DR Instructions (for experienced Rancher admins)
-- Fork this repo
-- Ensure your ingress wildcard points to sslip.io
-- Create a Fleet git repo pointing to your forked version of this repo
-- Target it to multiple clusters
-- Watch the magic happen
-- Make changes in this repo and watch the rolling deployments
